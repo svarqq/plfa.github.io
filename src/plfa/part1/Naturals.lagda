@@ -3,9 +3,9 @@ title     : "Naturals: Natural numbers"
 permalink : /Naturals/
 ---
 
-```agda
+\begin{code}
 module plfa.part1.Naturals where
-```
+\end{code}
 
 The night sky holds more stars than I can count, though fewer than five
 thousand are visible to the naked eye.  The observable universe
@@ -42,11 +42,11 @@ as a pair of inference rules:
     suc m : ℕ
 
 And here is the definition in Agda:
-```agda
+\begin{code}
 data ℕ : Set where
   zero : ℕ
   suc  : ℕ → ℕ
-```
+\end{code}
 
 Here `ℕ` is the name of the *datatype* we are defining,
 and `zero` and `suc` (short for *successor*) are the
@@ -77,9 +77,11 @@ successor of two; and so on.
 
 Write out `7` in longhand.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+seven : ℕ
+seven = suc(suc(suc(suc(suc(suc(suc zero))))))
+\end{code}
 
 You will need to give both a type signature and definition for the
 variable `seven`. Type `C-c C-l` in Emacs to instruct Agda to re-load.
@@ -234,9 +236,9 @@ code, with the exception of one special kind of comment, called a
 _pragma_, which is enclosed between `{-#` and `#-}`.
 
 Including the line
-```agda
+\begin{code}
 {-# BUILTIN NATURAL ℕ #-}
-```
+\end{code}
 tells Agda that `ℕ` corresponds to the natural numbers, and hence one
 is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
 `suc zero`, `2` as shorthand for `suc (suc zero)`, and so on. The pragma
@@ -259,11 +261,11 @@ terms involving natural numbers.  To support doing so, we import
 the definition of equality and notations for reasoning
 about it from the Agda standard library:
 
-```agda
+\begin{code}
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
-```
+\end{code}
 
 The first line brings the standard library module that defines
 equality into scope and gives it the name `Eq`. The second line
@@ -301,11 +303,11 @@ instances of addition and multiplication can be specified in
 just a couple of lines.
 
 Here is the definition of addition in Agda:
-```agda
+\begin{code}
 _+_ : ℕ → ℕ → ℕ
 zero + n = n
 (suc m) + n = suc (m + n)
-```
+\end{code}
 
 Let's unpack this definition.  Addition is an infix operator.  It is
 written with underbars where the arguments go, hence its name is
@@ -346,7 +348,7 @@ addition of larger numbers is defined in terms of addition of smaller
 numbers.  Such a definition is called _well founded_.
 
 For example, let's add two and three:
-```agda
+\begin{code}
 _ : 2 + 3 ≡ 5
 _ =
   begin
@@ -362,10 +364,10 @@ _ =
   ≡⟨⟩    -- is longhand for
     5
   ∎
-```
+\end{code}
 We can write the same derivation more compactly by only
 expanding shorthand as needed:
-```agda
+\begin{code}
 _ : 2 + 3 ≡ 5
 _ =
   begin
@@ -379,7 +381,7 @@ _ =
   ≡⟨⟩
     5
   ∎
-```
+\end{code}
 The first line matches the inductive case by taking `m = 1` and `n = 3`,
 the second line matches the inductive case by taking `m = 0` and `n = 3`,
 and the third line matches the base case by taking `n = 3`.
@@ -398,10 +400,10 @@ consists of a series of terms separated by `≡⟨⟩`.
 
 In fact, both proofs are longer than need be, and Agda is satisfied
 with the following:
-```agda
+\begin{code}
 _ : 2 + 3 ≡ 5
 _ = refl
-```
+\end{code}
 Agda knows how to
 compute the value of `2 + 3`, and so can immediately
 check it is the same as `5`.  A binary relation is said to be _reflexive_
@@ -429,20 +431,35 @@ other word for evidence, which we will use interchangeably, is _proof_.
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+_ : 3 + 4 ≡ 7
+_ =
+  begin
+    3 + 4
+  ≡⟨⟩
+    suc (2 + 4)
+  ≡⟨⟩
+    suc (suc (1 + 4))
+  ≡⟨⟩
+    suc (suc (suc (zero + 4)))
+  ≡⟨⟩
+    suc (suc (suc (4)))
+  ≡⟨⟩
+    7
+  ∎
+\end{code}
 
 
 ## Multiplication
 
 Once we have defined addition, we can define multiplication
 as repeated addition:
-```agda
+\begin{code}
 _*_ : ℕ → ℕ → ℕ
 zero    * n  =  zero
 (suc m) * n  =  n + (m * n)
-```
+\end{code}
 Computing `m * n` returns the sum of `m` copies of `n`.
 
 Again, rewriting turns the definition into two familiar equations:
@@ -465,7 +482,7 @@ Again, the definition is well founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
 
 For example, let's multiply two and three:
-```agda
+\begin{code}
 _ =
   begin
     2 * 3
@@ -478,7 +495,7 @@ _ =
   ≡⟨⟩    -- simplify
     6
   ∎
-```
+\end{code}
 The first line matches the inductive case by taking `m = 1` and `n = 3`,
 the second line matches the inductive case by taking `m = 0` and `n = 3`,
 and the third line matches the base case by taking `n = 3`.
@@ -491,9 +508,22 @@ it can easily be inferred from the corresponding term.
 Compute `3 * 4`, writing out your reasoning as a chain of equations, using the equations for `*`.
 (You do not need to step through the evaluation of `+`.)
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+_ : 3 * 4 ≡ 12
+_ =
+  begin
+    3 * 4
+  ≡⟨⟩
+    4 + (2 * 4)
+  ≡⟨⟩
+    4 + (4 + (1 * 4))
+  ≡⟨⟩
+    4 + (4 + (4 + (0 * 4)))
+  ≡⟨⟩
+    12
+  ∎
+\end{code}
 
 
 #### Exercise `_^_` (recommended) {#power}
@@ -505,9 +535,28 @@ Define exponentiation, which is given by the following equations:
 
 Check that `3 ^ 4` is `81`.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+_^_ : ℕ → ℕ → ℕ
+m ^ zero = 1
+m ^ (suc n) = m * (m ^ n)
+
+_ : 3 ^ 4 ≡ 81
+_ =
+  begin
+    3 * (3 ^ 3)
+  ≡⟨⟩
+    3 * (3 * (3 ^ 2))
+  ≡⟨⟩
+    3 * (3 * (3 * (3 ^ 1)))
+  ≡⟨⟩
+    3 * (3 * (3 * (3 * (3 ^ zero))))
+  ≡⟨⟩
+    3 * (3 * (3 * (3 * 1)))
+  ≡⟨⟩
+    81
+  ∎
+\end{code}
 
 
 
@@ -520,12 +569,12 @@ subtraction to naturals is called _monus_ (a twist on _minus_).
 
 Monus is our first use of a definition that uses pattern
 matching against both arguments:
-```agda
+\begin{code}
 _∸_ : ℕ → ℕ → ℕ
 m     ∸ zero   =  m
 zero  ∸ suc n  =  zero
 suc m ∸ suc n  =  m ∸ n
-```
+\end{code}
 We can do a simple analysis to show that all the cases are covered.
 
   * Consider the second argument.
@@ -540,7 +589,7 @@ founded because monus on bigger numbers is defined in terms of monus
 on smaller numbers.
 
 For example, let's subtract two from three:
-```agda
+\begin{code}
 _ =
   begin
     3 ∸ 2
@@ -551,10 +600,10 @@ _ =
   ≡⟨⟩
     1
   ∎
-```
+\end{code}
 We did not use the second equation at all, but it will be required
 if we try to subtract a larger number from a smaller one:
-```agda
+\begin{code}
 _ =
   begin
     2 ∸ 3
@@ -565,7 +614,7 @@ _ =
   ≡⟨⟩
     0
   ∎
-```
+\end{code}
 
 We defined monus to ensure that exactly one equation
 will apply.  Say the second line was instead written
@@ -588,9 +637,29 @@ Section [Logical Connectives](/Decidable/#logical-connectives).
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+_ : 5 ∸ 3 ≡ 2
+_ =
+  begin
+    5 ∸ 3
+  ≡⟨⟩
+    4 ∸ 2
+  ≡⟨⟩ -- ...
+    2 ∸ 0
+  ≡⟨⟩
+    2
+  ∎
+
+_ =
+  begin
+    3 ∸ 5
+  ≡⟨⟩
+    0 ∸ 2
+  ≡⟨⟩
+    0
+  ∎
+\end{code}
 
 
 ## Precedence
@@ -605,10 +674,10 @@ so write `m + n + p` to mean `(m + n) + p`.
 
 In Agda the precedence and associativity of infix operators
 needs to be declared:
-```agda
+\begin{code}
 infixl 6  _+_  _∸_
 infixl 7  _*_
-```
+\end{code}
 This states operators `_+_` and `_∸_` have precedence level 6,
 and operator `_*_` has precedence level 7.
 Addition and monus bind less tightly than multiplication
@@ -872,11 +941,11 @@ a program this simple, using `C-c C-c` to split cases can be helpful.
 ## More pragmas
 
 Including the lines
-```agda
+\begin{code}
 {-# BUILTIN NATPLUS _+_ #-}
 {-# BUILTIN NATTIMES _*_ #-}
 {-# BUILTIN NATMINUS _∸_ #-}
-```
+\end{code}
 tells Agda that these three operators correspond to the usual ones,
 and enables it to perform these computations using the corresponding
 Haskell operators on the arbitrary-precision integer type.
@@ -894,12 +963,12 @@ _m_ and _n_.
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
-```agda
+\begin{code}
 data Bin : Set where
   ⟨⟩ : Bin
   _O : Bin → Bin
   _I : Bin → Bin
-```
+\end{code}
 For instance, the bitstring
 
     1011
@@ -935,9 +1004,54 @@ For the former, choose the bitstring to have no leading zeros if it
 represents a positive natural, and represent zero by `⟨⟩ O`.
 Confirm that these both give the correct answer for zero through four.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+inc : Bin → Bin
+inc ⟨⟩ = ⟨⟩ I
+inc (x O) = x I
+inc (x I) = inc(x) O
+
+_ : inc (⟨⟩ O) ≡ ⟨⟩ I
+_ = refl
+_ : inc (⟨⟩ I) ≡ ⟨⟩ I O
+_ = refl
+_ : inc (⟨⟩ I O) ≡ ⟨⟩ I I
+_ = refl
+_ : inc (⟨⟩ I I) ≡ ⟨⟩ I O O
+_ = refl
+
+to : ℕ → Bin
+to zero = ⟨⟩ O
+to (suc x) = inc (to x)
+
+{-# TERMINATING #-}
+from : Bin → ℕ
+from ⟨⟩     = zero
+from (⟨⟩ O) = zero
+from (⟨⟩ I O) = 2
+from (x I) = 1 + from (x O)
+from (x O) = 1 + from ((to ((from x) ∸ 1)) I)
+
+_ : from ⟨⟩ ≡ zero
+_ = refl
+_ : from (⟨⟩ O) ≡ zero
+_ = refl
+_ : from (⟨⟩ I) ≡ 1
+_ = refl
+_ : from (⟨⟩ I O) ≡ 2
+_ = refl
+_ : from (⟨⟩ I I) ≡ 3
+_ = refl
+
+_ : to 0 ≡ ⟨⟩ O
+_ = refl
+_ : to 1 ≡ ⟨⟩ I
+_ = refl
+_ : to 2 ≡ ⟨⟩ I O
+_ = refl
+_ : to 3 ≡ ⟨⟩ I I
+_ = refl
+\end{code}
 
 
 ## Standard library
