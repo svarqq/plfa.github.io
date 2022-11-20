@@ -1,11 +1,15 @@
+TODO:
+- #### Exercise `+*^` (stretch)
+- #### Exercise `Bin-laws` (stretch) {#Bin-laws}
+
 ---
 title     : "Induction: Proof by Induction"
 permalink : /Induction/
 ---
 
-```agda
+\begin{code}
 module plfa.part1.Induction where
-```
+\end{code}
 
 > Induction makes you feel guilty for getting something out of nothing
 > ... but it is one of the greatest ideas of civilization.
@@ -22,12 +26,12 @@ _induction_.
 We require equality as in the previous chapter, plus the naturals
 and some operations upon them.  We also require a couple of new operations,
 `cong`, `sym`, and `_≡⟨_⟩_`, which are explained below:
-```agda
+\begin{code}
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_;_^_)
-```
+\end{code}
 (Importing `step-≡` defines `_≡⟨_⟩_`.)
 
 
@@ -91,7 +95,7 @@ Here `m`, `n`, and `p` are variables that range over all natural numbers.
 
 We can test the proposition by choosing specific numbers for the three
 variables:
-```agda
+\begin{code}
 _ : (3 + 4) + 5 ≡ 3 + (4 + 5)
 _ =
   begin
@@ -105,7 +109,7 @@ _ =
   ≡⟨⟩
     3 + (4 + 5)
   ∎
-```
+\end{code}
 Here we have displayed the computation as a chain of equations,
 one term to a line.  It is often easiest to read such chains from the top down
 until one reaches the simplest term (in this case, `12`), and
@@ -221,7 +225,7 @@ If we can demonstrate both of these, then associativity of addition
 follows by induction.
 
 Here is the proposition's statement and proof:
-```agda
+\begin{code}
 +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 +-assoc zero n p =
   begin
@@ -243,7 +247,7 @@ Here is the proposition's statement and proof:
   ≡⟨⟩
     suc m + (n + p)
   ∎
-```
+\end{code}
 We have named the proof `+-assoc`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
 
@@ -317,7 +321,7 @@ As a concrete example of how induction corresponds to recursion, here
 is the computation that occurs when instantiating `m` to `2` in the
 proof of associativity.
 
-```agda
+\begin{code}
 +-assoc-2 : ∀ (n p : ℕ) → (2 + n) + p ≡ 2 + (n + p)
 +-assoc-2 n p =
   begin
@@ -355,7 +359,7 @@ proof of associativity.
       ≡⟨⟩
         0 + (n + p)
       ∎
-```
+\end{code}
 
 
 ## Terminology and notation
@@ -399,7 +403,7 @@ Our first lemma states that zero is also a right-identity:
     m + zero ≡ m
 
 Here is the lemma's statement and proof:
-```agda
+\begin{code}
 +-identityʳ : ∀ (m : ℕ) → m + zero ≡ m
 +-identityʳ zero =
   begin
@@ -415,7 +419,7 @@ Here is the lemma's statement and proof:
   ≡⟨ cong suc (+-identityʳ m) ⟩
     suc m
   ∎
-```
+\end{code}
 The signature states that we are defining the identifier `+-identityʳ` which
 provides evidence for the proposition:
 
@@ -466,7 +470,7 @@ Our second lemma does the same for `suc` on the second argument:
     m + suc n ≡ suc (m + n)
 
 Here is the lemma's statement and proof:
-```agda
+\begin{code}
 +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
 +-suc zero n =
   begin
@@ -486,7 +490,7 @@ Here is the lemma's statement and proof:
   ≡⟨⟩
     suc (suc m + n)
   ∎
-```
+\end{code}
 The signature states that we are defining the identifier `+-suc` which provides
 evidence for the proposition:
 
@@ -528,7 +532,7 @@ yield the needed equation.  This completes the second lemma.
 ### The proposition
 
 Finally, here is our proposition's statement and proof:
-```agda
+\begin{code}
 +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm m zero =
   begin
@@ -548,7 +552,7 @@ Finally, here is our proposition's statement and proof:
   ≡⟨⟩
     suc n + m
   ∎
-```
+\end{code}
 The first line states that we are defining the identifier
 `+-comm` which provides evidence for the proposition:
 
@@ -601,7 +605,7 @@ will suggest what lemmas to prove.
 
 We can apply associativity to rearrange parentheses however we like.
 Here is an example:
-```agda
+\begin{code}
 +-rearrange : ∀ (m n p q : ℕ) → (m + n) + (p + q) ≡ m + (n + p) + q
 +-rearrange m n p q =
   begin
@@ -611,7 +615,7 @@ Here is an example:
   ≡⟨ cong (_+ q) (+-assoc m n p) ⟩
     (m + (n + p)) + q
   ∎
-```
+\end{code}
 No induction is required, we simply apply associativity twice.
 A few points are worthy of note.
 
@@ -701,20 +705,29 @@ Write out what is known about associativity of addition on each of the
 first four days using a finite story of creation, as
 [earlier](/Naturals/#finite-creation).
 
-```agda
+
 -- Your code goes here
-```
+0⁺ : ℕ
+1⁺ : ℕ   0⁺+(0⁺+0⁺)=(0⁺+0⁺)+0⁺
+2⁺ : ℕ   100 010 001
+3⁺ : ℕ   200 020 002 110 101 011
+4⁺ : ℕ   300 030 003 120 210 102 201 012 021 111
+where xyz = (x + y) + z ≡ x + (y + z)
+recall the rationale: there are only finitely many natural numbers that exist on
+day n⁺, namely {0, ..., suc n⁺}, and we can form sum results of naturals up to
+n⁺
+_____________________________________________
 
 ## Associativity with rewrite
 
 There is more than one way to skin a cat.  Here is a second proof of
 associativity of addition in Agda, using `rewrite` rather than chains of
 equations:
-```agda
+\begin{code}
 +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-+-assoc′ zero    n p                          =  refl
-+-assoc′ (suc m) n p  rewrite +-assoc′ m n p  =  refl
-```
++-assoc′ zero n p = refl
++-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
+\end{code}
 
 For the base case, we must show:
 
@@ -750,7 +763,7 @@ not only chains of equations but also the need to invoke `cong`.
 
 Here is a second proof of commutativity of addition, using `rewrite` rather than
 chains of equations:
-```agda
+\begin{code}
 +-identity′ : ∀ (n : ℕ) → n + zero ≡ n
 +-identity′ zero = refl
 +-identity′ (suc n) rewrite +-identity′ n = refl
@@ -762,7 +775,7 @@ chains of equations:
 +-comm′ : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm′ m zero rewrite +-identity′ m = refl
 +-comm′ m (suc n) rewrite +-suc′ m n | +-comm′ m n = refl
-```
+\end{code}
 In the final line, rewriting with two equations is
 indicated by separating the two proofs of the relevant equations by a
 vertical bar; the rewrite on the left is performed before that on the
@@ -873,9 +886,12 @@ for all naturals `m`, `n`, and `p`. No induction is needed,
 just apply the previous results which show addition
 is associative and commutative.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
++-swap : ∀ (m n p : ℕ) → m + (n + p) ≡ n + (m + p)
++-swap zero n p = refl
++-swap (suc m) n p rewrite +-comm (suc m) (n + p) | +-assoc n p (suc m) | +-comm p (suc m) = refl
+\end{code}
 
 
 #### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
@@ -886,9 +902,12 @@ Show multiplication distributes over addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+*-distrib-+ : ∀ (m n p : ℕ) → (m + n) * p ≡ m * p + n * p
+*-distrib-+ zero n p = refl
+*-distrib-+ (suc m) n p rewrite *-distrib-+ m n p | +-assoc p (m * p) (n * p) = refl
+\end{code}
 
 
 #### Exercise `*-assoc` (recommended) {#times-assoc}
@@ -899,9 +918,12 @@ Show multiplication is associative, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+*-assoc : ∀ (m n p : ℕ) → (m * n) * p ≡ m * (n * p)
+*-assoc zero n p = refl
+*-assoc (suc m) n p rewrite +-assoc m n p | *-distrib-+ n (m * n) p | *-assoc m n p = refl
+\end{code}
 
 
 #### Exercise `*-comm` (practice) {#times-comm}
@@ -913,9 +935,20 @@ Show multiplication is commutative, that is,
 for all naturals `m` and `n`.  As with commutativity of addition,
 you will need to formulate and prove suitable lemmas.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+*-r-term : ∀ (n : ℕ) → n * zero ≡ zero
+*-r-term zero = refl
+*-r-term (suc n) rewrite *-r-term n = refl
+
+*-suc : ∀ (m n : ℕ) → m * suc n ≡ (m * n) + m
+*-suc zero n = refl
+*-suc (suc m) n rewrite *-suc m n | +-suc (n + m * n) m | +-assoc n (m * n) m = refl
+
+*-comm : ∀ (m n : ℕ) → m * n ≡ n * m
+*-comm zero n rewrite *-r-term n = refl
+*-comm (suc m) n rewrite *-suc n m | +-comm n (m * n) | *-comm n m = refl
+\end{code}
 
 
 #### Exercise `0∸n≡0` (practice) {#zero-monus}
@@ -926,9 +959,12 @@ Show
 
 for all naturals `n`. Did your proof require induction?
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+0∸n≡0 : ∀ (n : ℕ) → zero ∸ n ≡ zero
+0∸n≡0 zero = refl
+0∸n≡0 (suc n) = refl
+\end{code}
 
 
 #### Exercise `∸-+-assoc` (practice) {#monus-plus-assoc}
@@ -939,9 +975,20 @@ Show that monus associates with addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+{-
+∸-+-assoc : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
+∸-+-assoc zero n p rewrite 0∸n≡0 (n + p) | 0∸n≡0 n | 0∸n≡0 p = refl
+∸-+-assoc (suc m) n p rewrite ∸-+-assoc m n p = {!!}
+-}
+
+∸-+-assoc : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
+∸-+-assoc zero zero p = refl
+∸-+-assoc zero (suc n) p rewrite 0∸n≡0 p = refl
+∸-+-assoc (suc m) zero p = refl
+∸-+-assoc (suc m) (suc n) p rewrite ∸-+-assoc m n p = refl
+\end{code}
 
 
 #### Exercise `+*^` (stretch)
@@ -954,9 +1001,16 @@ Show the following three laws
 
 for all `m`, `n`, and `p`.
 
-```
+\begin{code}
 -- Your code goes here
-```
+^-distribˡ-+-* : ∀ (m n p : ℕ) →  m ^ (n + p) ≡ (m ^ n) * (m ^ p)
+^-distribˡ-+-* m zero p rewrite +-identityʳ (m ^ p) = refl
+^-distribˡ-+-* m (suc n) p rewrite ^-distribˡ-+-* m n p | *-assoc m (m ^ n) (m ^ p) = refl
+
+^-distribʳ-* : ∀ (m n p : ℕ) → (m * n) ^ p ≡ (m ^ p) * (n ^ p)
+^-distribʳ-* m n zero = refl
+^-distribʳ-* m n (suc p) rewrite ^-distribʳ-* m n p | *-comm n ((m ^ p) * (n ^ p)) = {!!}
+\end{code}
 
 
 #### Exercise `Bin-laws` (stretch) {#Bin-laws}
