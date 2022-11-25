@@ -8,6 +8,7 @@ permalink : /Induction/
 ---
 
 \begin{code}
+{-# OPTIONS --allow-unsolved-metas #-}
 module plfa.part1.Induction where
 \end{code}
 
