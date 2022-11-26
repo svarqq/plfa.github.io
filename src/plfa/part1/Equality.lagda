@@ -3,9 +3,9 @@ title     : "Equality: Equality and equational reasoning"
 permalink : /Equality/
 ---
 
-```agda
+\begin{code}
 module plfa.part1.Equality where
-```
+\end{code}
 
 Much of our reasoning has involved equality.  Given two terms `M`
 and `N`, both of type `A`, we write `M ≡ N` to assert that `M` and `N`
@@ -23,10 +23,10 @@ Since we define equality here, any import would create a conflict.
 ## Equality
 
 We declare equality as follows:
-```agda
+\begin{code}
 data _≡_ {A : Set} (x : A) : A → Set where
   refl : x ≡ x
-```
+\end{code}
 In other words, for any type `A` and for any `x` of type `A`, the
 constructor `refl` provides evidence that `x ≡ x`. Hence, every value
 is equal to itself, and we have no other way of showing values
@@ -38,9 +38,9 @@ can be a parameter because it doesn't vary, while the second must be
 an index, so it can be required to be equal to the first.
 
 We declare the precedence of equality as follows:
-```agda
+\begin{code}
 infix 4 _≡_
-```
+\end{code}
 We set the precedence of `_≡_` at level 4, the same as `_≤_`,
 which means it binds less tightly than any arithmetic operator.
 It associates neither to left nor right; writing `x ≡ y ≡ z`
@@ -52,13 +52,13 @@ is illegal.
 An equivalence relation is one which is reflexive, symmetric, and transitive.
 Reflexivity is built-in to the definition of equality, via the
 constructor `refl`.  It is straightforward to show symmetry:
-```agda
+\begin{code}
 sym : ∀ {A : Set} {x y : A}
   → x ≡ y
     -----
   → y ≡ x
 sym refl = refl
-```
+\end{code}
 How does this proof work? The argument to `sym` has type `x ≡ y`, but
 on the left-hand side of the equation the argument has been
 instantiated to the pattern `refl`, which requires that `x` and `y`
@@ -117,14 +117,14 @@ the expected type:
 This completes the definition as given above.
 
 Transitivity is equally straightforward:
-```agda
+\begin{code}
 trans : ∀ {A : Set} {x y z : A}
   → x ≡ y
   → y ≡ z
     -----
   → x ≡ z
 trans refl refl  =  refl
-```
+\end{code}
 Again, a useful exercise is to carry out an interactive development,
 checking how Agda's knowledge changes as each of the two arguments is
 instantiated.
@@ -133,44 +133,44 @@ instantiated.
 
 Equality satisfies _congruence_.  If two terms are equal,
 they remain so after the same function is applied to both:
-```agda
+\begin{code}
 cong : ∀ {A B : Set} (f : A → B) {x y : A}
   → x ≡ y
     ---------
   → f x ≡ f y
 cong f refl  =  refl
-```
+\end{code}
 
 Congruence of functions with two arguments is similar:
-```agda
+\begin{code}
 cong₂ : ∀ {A B C : Set} (f : A → B → C) {u x : A} {v y : B}
   → u ≡ x
   → v ≡ y
     -------------
   → f u v ≡ f x y
 cong₂ f refl refl  =  refl
-```
+\end{code}
 
 Equality is also a congruence in the function position of an application.
 If two functions are equal, then applying them to the same term
 yields equal terms:
-```agda
+\begin{code}
 cong-app : ∀ {A B : Set} {f g : A → B}
   → f ≡ g
     ---------------------
   → ∀ (x : A) → f x ≡ g x
 cong-app refl x = refl
-```
+\end{code}
 
 Equality also satisfies *substitution*.
 If two values are equal and a predicate holds of the first then it also holds of the second:
-```agda
+\begin{code}
 subst : ∀ {A : Set} {x y : A} (P : A → Set)
   → x ≡ y
     ---------
   → P x → P y
 subst P refl px = px
-```
+\end{code}
 
 
 ## Chains of equations
@@ -179,7 +179,7 @@ Here we show how to support reasoning with chains of equations, as
 used throughout the book.  We package the declarations into a module,
 named `≡-Reasoning`, to match the format used in Agda's standard
 library:
-```agda
+\begin{code}
 module ≡-Reasoning {A : Set} where
 
   infix  1 begin_
@@ -211,7 +211,7 @@ module ≡-Reasoning {A : Set} where
   x ∎  =  refl
 
 open ≡-Reasoning
-```
+\end{code}
 This is our first use of a nested module. It consists of the keyword
 `module` followed by the module name and any parameters, explicit or
 implicit, the keyword `where`, and the contents of the module indented.
@@ -223,7 +223,7 @@ available in the current environment.
 
 As an example, let's look at a proof of transitivity
 as a chain of equations:
-```agda
+\begin{code}
 trans′ : ∀ {A : Set} {x y z : A}
   → x ≡ y
   → y ≡ z
@@ -237,8 +237,8 @@ trans′ {A} {x} {y} {z} x≡y y≡z =
   ≡⟨ y≡z ⟩
     z
   ∎
-```
-According to the fixity declarations, the body parses as follows:
+\end{code}
+According t:o the fixity declarations, the body parses as follows:
 
     begin (x ≡⟨ x≡y ⟩ (y ≡⟨ y≡z ⟩ (z ∎)))
 
@@ -270,9 +270,9 @@ alone would do.
 Sadly, we cannot use the definition of trans' using ≡-Reasoning as the definition
 for trans. Can you see why? (Hint: look at the definition of `_≡⟨_⟩_`)
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+\end{code}
 
 ## Chains of equations, another example
 
@@ -280,7 +280,7 @@ As a second example of chains of equations, we repeat the proof that addition
 is commutative.  We first repeat the definitions of naturals and addition.
 We cannot import them because (as noted at the beginning of this chapter)
 it would cause a conflict:
-```agda
+\begin{code}
 data ℕ : Set where
   zero : ℕ
   suc  : ℕ → ℕ
@@ -288,14 +288,14 @@ data ℕ : Set where
 _+_ : ℕ → ℕ → ℕ
 zero    + n  =  n
 (suc m) + n  =  suc (m + n)
-```
+\end{code}
 
 To save space we postulate (rather than prove in full) two lemmas:
-```agda
+\begin{code}
 postulate
   +-identity : ∀ (m : ℕ) → m + zero ≡ m
   +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
-```
+\end{code}
 This is our first use of a _postulate_.  A postulate specifies a
 signature for an identifier but no definition.  Here we postulate
 something proved earlier to save space.  Postulates must be used with
@@ -303,7 +303,7 @@ caution.  If we postulate something false then we could use Agda to
 prove anything whatsoever.
 
 We then repeat the proof of commutativity:
-```agda
+\begin{code}
 +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm m zero =
   begin
@@ -323,7 +323,7 @@ We then repeat the proof of commutativity:
   ≡⟨⟩
     suc n + m
   ∎
-```
+\end{code}
 The reasoning here is similar to that in the
 preceding section.  We use
 `_≡⟨⟩_` when no justification is required.
@@ -358,9 +358,65 @@ notation for `≡-Reasoning`.  Define `≤-Reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
 regard to inequality.  Rewrite all of `+-monoˡ-≤`, `+-monoʳ-≤`, and `+-mono-≤`.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+infix  1 ≤-begin_
+infixr 2 _≤⟨⟩_ _≤⟨_⟩_
+infix  3 _≤-∎
+infix  6 _≤_
+
+data _≤_ : ℕ → ℕ → Set where
+  z≤s : ∀ {n : ℕ} → zero ≤ n
+  s≤s : ∀ {m n : ℕ} → m ≤ n → suc m ≤ suc n
+
+≤-refl : ∀ {x : ℕ} → x ≤ x
+≤-refl {zero} = z≤s
+≤-refl {suc x} = s≤s ≤-refl
+
+≤-trans : ∀ {x y z : ℕ} → x ≤ y → y ≤ z → x ≤ z
+≤-trans z≤s y≤z = z≤s
+≤-trans (s≤s x≤y) (s≤s y≤z) = s≤s (≤-trans x≤y y≤z)
+
+≤-begin_ : ∀ {x y : ℕ} → x ≤ y → x ≤ y
+≤-begin x≤y = x≤y
+
+_≤⟨⟩_ : ∀ (x : ℕ) {y : ℕ} → x ≤ y → x ≤ y
+x ≤⟨⟩ x≤y = x≤y
+
+_≤⟨_⟩_ : ∀ (x : ℕ) {y z : ℕ} → x ≤ y → y ≤ z → x ≤ z
+x ≤⟨ x≤y ⟩ y≤z = ≤-trans x≤y y≤z
+
+_≤-∎ : ∀ (x : ℕ) → x ≤ x
+x ≤-∎ = ≤-refl
+
++-monoʳ-≤ : ∀ (p m n : ℕ) → m ≤ n → p + m ≤ p + n
++-monoʳ-≤ zero _ _ m≤n = m≤n
++-monoʳ-≤ (suc p) m n m≤n =
+  ≤-begin
+    suc p + m
+  ≤⟨⟩
+    suc (p + m)
+  ≤⟨ s≤s (+-monoʳ-≤ p m n m≤n) ⟩
+    suc (p + n)
+  ≤⟨⟩
+    suc p + n
+  ≤-∎
+
+{-# BUILTIN EQUALITY _≡_ #-}
+
++-monoˡ-≤ : ∀ (p m n : ℕ) → m ≤ n → m + p ≤ n + p
++-monoˡ-≤ p m n m≤n rewrite +-comm m p | +-comm n p = +-monoʳ-≤ p m n m≤n
+
++-mono-≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
++-mono-≤ m n p q m≤n p≤q =
+  ≤-begin
+    m + p
+  ≤⟨ +-monoˡ-≤ p m n m≤n  ⟩
+    (n + p)
+  ≤⟨ +-monoʳ-≤ n p q p≤q ⟩
+    (n + q)
+  ≤-∎
+\end{code}
 
 
 
@@ -368,7 +424,7 @@ regard to inequality.  Rewrite all of `+-monoˡ-≤`, `+-monoʳ-≤`, and `+-mon
 
 Consider a property of natural numbers, such as being even.
 We repeat the earlier definition:
-```agda
+\begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set
 
@@ -386,7 +442,7 @@ data odd where
     → even n
       -----------
     → odd (suc n)
-```
+\end{code}
 In the previous section, we proved addition is commutative.  Given
 evidence that `even (m + n)` holds, we ought also to be able to take
 that as evidence that `even (n + m)` holds.
@@ -395,18 +451,18 @@ Agda includes special notation to support just this kind of reasoning,
 the `rewrite` notation we encountered earlier.
 To enable this notation, we use pragmas to tell Agda which type
 corresponds to equality:
-```agda
-{-# BUILTIN EQUALITY _≡_ #-}
-```
+\begin{code}
+-- {-# BUILTIN EQUALITY _≡_ #-}
+\end{code}
 
 We can then prove the desired property as follows:
-```agda
+\begin{code}
 even-comm : ∀ (m n : ℕ)
   → even (m + n)
     ------------
   → even (n + m)
 even-comm m n ev  rewrite +-comm n m  =  ev
-```
+\end{code}
 Here `ev` ranges over evidence that `even (m + n)` holds, and we show
 that it also provides evidence that `even (n + m)` holds.  In
 general, the keyword `rewrite` is followed by evidence of an
@@ -459,11 +515,11 @@ the same type as the goal.
 One may perform multiple rewrites, each separated by a vertical bar.  For instance,
 here is a second proof that addition is commutative, relying on rewrites rather
 than chains of equalities:
-```agda
+\begin{code}
 +-comm′ : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm′ zero    n  rewrite +-identity n             =  refl
 +-comm′ (suc m) n  rewrite +-suc n m | +-comm′ m n  =  refl
-```
+\end{code}
 This is far more compact.  Among other things, whereas the previous
 proof required `cong suc (+-comm m n)` as the justification to invoke
 the inductive hypothesis, here it is sufficient to rewrite with
@@ -477,14 +533,14 @@ when feasible.
 
 The `rewrite` notation is in fact shorthand for an appropriate use of `with`
 abstraction:
-```agda
+\begin{code}
 even-comm′ : ∀ (m n : ℕ)
   → even (m + n)
     ------------
   → even (n + m)
 even-comm′ m n ev with   m + n  | +-comm m n
 ...                  | .(n + m) | refl       = ev
-```
+\end{code}
 In general, one can follow `with` by any number of expressions,
 separated by bars, where each following equation has the same number
 of patterns.  We often write expressions and the corresponding
@@ -504,13 +560,13 @@ reversing the order of the clauses will cause Agda to report an error.
 
 In this case, we can avoid rewrite by simply applying the substitution
 function defined earlier:
-```agda
+\begin{code}
 even-comm″ : ∀ (m n : ℕ)
   → even (m + n)
     ------------
   → even (n + m)
-even-comm″ m n  =  subst even (+-comm m n)
-```
+even-comm″ m n  = subst even (+-comm m n)
+\end{code}
 Nonetheless, rewrite is a vital part of the Agda toolkit.  We will use
 it sparingly, but it is occasionally essential.
 
