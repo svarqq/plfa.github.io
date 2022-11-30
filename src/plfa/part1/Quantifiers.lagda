@@ -3,15 +3,15 @@ title     : "Quantifiers: Universals and existentials"
 permalink : /Quantifiers/
 ---
 
-```agda
+\begin{code}
 module plfa.part1.Quantifiers where
-```
+\end{code}
 
 This chapter introduces universal and existential quantification.
 
 ## Imports
 
-```agda
+\begin{code}
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
@@ -19,7 +19,7 @@ open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import plfa.part1.Isomorphism using (_≃_; extensionality)
-```
+\end{code}
 
 
 ## Universals
@@ -55,14 +55,14 @@ provides evidence that `B M` holds.  In other words, evidence that
 
 Put another way, if we know that `∀ (x : A) → B x` holds and that `M`
 is a term of type `A` then we may conclude that `B M` holds:
-```agda
+\begin{code}
 ∀-elim : ∀ {A : Set} {B : A → Set}
   → (L : ∀ (x : A) → B x)
   → (M : A)
     -----------------
   → B M
 ∀-elim L M = L M
-```
+\end{code}
 As with `→-elim`, the rule corresponds to function application.
 
 Functions arise as a special case of dependent functions,
@@ -88,34 +88,34 @@ dependent product is ambiguous.
 #### Exercise `∀-distrib-×` (recommended)
 
 Show that universals distribute over conjunction:
-```agda
+\begin{code}
 postulate
   ∀-distrib-× : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
-```
+\end{code}
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives](/Connectives/).
 
 #### Exercise `⊎∀-implies-∀⊎` (practice)
 
 Show that a disjunction of universals implies a universal of disjunctions:
-```agda
+\begin{code}
 postulate
   ⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x) → ∀ (x : A) → B x ⊎ C x
-```
+\end{code}
 Does the converse hold? If so, prove; if not, explain why.
 
 
 #### Exercise `∀-×` (practice)
 
 Consider the following type.
-```agda
+\begin{code}
 data Tri : Set where
   aa : Tri
   bb : Tri
   cc : Tri
-```
+\end{code}
 Let `B` be a type indexed by `Tri`, that is `B : Tri → Set`.
 Show that `∀ (x : Tri) → B x` is isomorphic to `B aa × B bb × B cc`.
 Hint: you will need to postulate a version of extensionality that
@@ -134,16 +134,16 @@ the proposition `B x` with each free occurrence of `x` replaced by
 
 We formalise existential quantification by declaring a suitable
 inductive type:
-```agda
+\begin{code}
 data Σ (A : Set) (B : A → Set) : Set where
   ⟨_,_⟩ : (x : A) → B x → Σ A B
-```
+\end{code}
 We define a convenient syntax for existentials as follows:
-```agda
+\begin{code}
 Σ-syntax = Σ
 infix 2 Σ-syntax
 syntax Σ-syntax A (λ x → B) = Σ[ x ∈ A ] B
-```
+\end{code}
 This is our first use of a syntax declaration, which specifies that
 the term on the left may be written with the syntax on the right.
 The special syntax is available only when the identifier
@@ -154,12 +154,12 @@ Evidence that `Σ[ x ∈ A ] B x` holds is of the form
 that `B M` holds.
 
 Equivalently, we could also declare existentials as a record type:
-```agda
+\begin{code}
 record Σ′ (A : Set) (B : A → Set) : Set where
   field
     proj₁′ : A
     proj₂′ : B proj₁′
-```
+\end{code}
 Here record construction
 
     record
@@ -197,27 +197,27 @@ product and since existentials also have a claim to the name dependent sum.
 A common notation for existentials is `∃` (analogous to `∀` for universals).
 We follow the convention of the Agda standard library, and reserve this
 notation for the case where the domain of the bound variable is left implicit:
-```agda
+\begin{code}
 ∃ : ∀ {A : Set} (B : A → Set) → Set
 ∃ {A} B = Σ A B
 
 ∃-syntax = ∃
 syntax ∃-syntax (λ x → B) = ∃[ x ] B
-```
+\end{code}
 The special syntax is available only when the identifier `∃-syntax` is imported.
 We will tend to use this syntax, since it is shorter and more familiar.
 
 Given evidence that `∀ x → B x → C` holds, where `C` does not contain
 `x` as a free variable, and given evidence that `∃[ x ] B x` holds, we
 may conclude that `C` holds:
-```agda
+\begin{code}
 ∃-elim : ∀ {A : Set} {B : A → Set} {C : Set}
   → (∀ x → B x → C)
   → ∃[ x ] B x
     ---------------
   → C
 ∃-elim f ⟨ x , y ⟩ = f x y
-```
+\end{code}
 In other words, if we know for every `x` of type `A` that `B x`
 implies `C`, and we know for some `x` of type `A` that `B x` holds,
 then we may conclude that `C` holds.  This is because we may
@@ -226,7 +226,7 @@ instantiate that proof that `∀ x → B x → C` to any value `x` of type
 the evidence for `∃[ x ] B x`.
 
 Indeed, the converse also holds, and the two together form an isomorphism:
-```agda
+\begin{code}
 ∀∃-currying : ∀ {A : Set} {B : A → Set} {C : Set}
   → (∀ x → B x → C) ≃ (∃[ x ] B x → C)
 ∀∃-currying =
@@ -236,7 +236,7 @@ Indeed, the converse also holds, and the two together form an isomorphism:
     ; from∘to =  λ{ f → refl }
     ; to∘from =  λ{ g → extensionality λ{ ⟨ x , y ⟩ → refl }}
     }
-```
+\end{code}
 The result can be viewed as a generalisation of currying.  Indeed, the code to
 establish the isomorphism is identical to what we wrote when discussing
 [implication](/Connectives/#implication).
@@ -244,20 +244,20 @@ establish the isomorphism is identical to what we wrote when discussing
 #### Exercise `∃-distrib-⊎` (recommended)
 
 Show that existentials distribute over disjunction:
-```agda
+\begin{code}
 postulate
   ∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
     ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
-```
+\end{code}
 
 #### Exercise `∃×-implies-×∃` (practice)
 
 Show that an existential of conjunctions implies a conjunction of existentials:
-```agda
+\begin{code}
 postulate
   ∃×-implies-×∃ : ∀ {A : Set} {B C : A → Set} →
     ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
-```
+\end{code}
 Does the converse hold? If so, prove; if not, explain why.
 
 #### Exercise `∃-⊎` (practice)
@@ -270,7 +270,7 @@ Show that `∃[ x ] B x` is isomorphic to `B aa ⊎ B bb ⊎ B cc`.
 
 Recall the definitions of `even` and `odd` from
 Chapter [Relations](/Relations/):
-```agda
+\begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set
 
@@ -288,7 +288,7 @@ data odd where
     → even n
       -----------
     → odd (suc n)
-```
+\end{code}
 A number is even if it is zero or the successor of an odd number, and
 odd if it is the successor of an even number.
 
@@ -305,7 +305,7 @@ the constant term in a sum last. Here we've reversed each of those
 conventions, because doing so eases the proof.
 
 Here is the proof in the forward direction:
-```agda
+\begin{code}
 even-∃ : ∀ {n : ℕ} → even n → ∃[ m ] (    m * 2 ≡ n)
 odd-∃  : ∀ {n : ℕ} →  odd n → ∃[ m ] (1 + m * 2 ≡ n)
 
@@ -315,7 +315,7 @@ even-∃ (even-suc o) with odd-∃ o
 
 odd-∃  (odd-suc e)  with even-∃ e
 ...                    | ⟨ m , refl ⟩  =  ⟨ m , refl ⟩
-```
+\end{code}
 We define two mutually recursive functions. Given
 evidence that `n` is even or odd, we return a
 number `m` and evidence that `m * 2 ≡ n` or `1 + m * 2 ≡ n`.
@@ -339,7 +339,7 @@ substituting for `n`.
 This completes the proof in the forward direction.
 
 Here is the proof in the reverse direction:
-```agda
+\begin{code}
 ∃-even : ∀ {n : ℕ} → ∃[ m ] (    m * 2 ≡ n) → even n
 ∃-odd  : ∀ {n : ℕ} → ∃[ m ] (1 + m * 2 ≡ n) →  odd n
 
@@ -347,7 +347,7 @@ Here is the proof in the reverse direction:
 ∃-even ⟨ suc m , refl ⟩  =  even-suc (∃-odd ⟨ m , refl ⟩)
 
 ∃-odd  ⟨     m , refl ⟩  =  odd-suc (∃-even ⟨ m , refl ⟩)
-```
+\end{code}
 Given a number that is twice some other number we must show it is
 even, and a number that is one more than twice some other number we
 must show it is odd.  We induct over the evidence of the existential,
@@ -373,18 +373,18 @@ How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
 restated in this way.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+\end{code}
 
 #### Exercise `∃-+-≤` (practice)
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+\end{code}
 
 
 ## Existentials, Universals, and Negation
@@ -394,7 +394,7 @@ of a negation.  Considering that existentials are generalised
 disjunction and universals are generalised conjunction, this
 result is analogous to the one which tells us that negation
 of a disjunction is isomorphic to a conjunction of negations:
-```agda
+\begin{code}
 ¬∃≃∀¬ : ∀ {A : Set} {B : A → Set}
   → (¬ ∃[ x ] B x) ≃ ∀ x → ¬ B x
 ¬∃≃∀¬ =
@@ -404,7 +404,7 @@ of a disjunction is isomorphic to a conjunction of negations:
     ; from∘to =  λ{ ¬∃xy → extensionality λ{ ⟨ x , y ⟩ → refl } }
     ; to∘from =  λ{ ∀¬xy → refl }
     }
-```
+\end{code}
 In the `to` direction, we are given a value `¬∃xy` of type
 `¬ ∃[ x ] B x`, and need to show that given a value
 `x` that `¬ B x` follows, in other words, from
@@ -425,13 +425,13 @@ requires extensionality.
 #### Exercise `∃¬-implies-¬∀` (recommended)
 
 Show that existential of a negation implies negation of a universal:
-```agda
+\begin{code}
 postulate
   ∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set}
     → ∃[ x ] (¬ B x)
       --------------
     → ¬ (∀ x → B x)
-```
+\end{code}
 Does the converse hold? If so, prove; if not, explain why.
 
 
@@ -476,17 +476,17 @@ which is a corollary of `≡Can`.
 
     proj₁≡→Can≡ : {cb cb′ : ∃[ b ] Can b} → proj₁ cb ≡ proj₁ cb′ → cb ≡ cb′
 
-```agda
+\begin{code}
 -- Your code goes here
-```
+\end{code}
 
 
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
-```agda
+\begin{code}
 import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
-```
+\end{code}
 
 
 ## Unicode
