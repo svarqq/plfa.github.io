@@ -241,13 +241,14 @@ is isomorphic to `(A → B) × (B → A)`.
 -- Your code goes here
 import plfa.part1.Isomorphism as Iso
 open Iso using (_⇔_)
-⇔≃× : ∀ {A B : Set} → A ⇔ B → A ⇔ B ≃ (A → B × B → A)
-⇔≃× A⇔B =
+open _⇔_
+⇔≃× : ∀ {A B : Set} → A ⇔ B ≃ (A → B) × (B → A)
+⇔≃× =
   record
-    { to      = {!!}
-    ; from    = {!!}
-    ; from∘to = {!!}
-    ; to∘from = {!!}
+    { to      = λ x → ⟨ to x , from x ⟩
+    ; from    = λ{⟨ (A→B) , (B→A) ⟩ → record {to = A→B; from = B→A}}
+    ; from∘to = λ x → refl
+    ; to∘from = λ{⟨ x , y ⟩ → refl}
     }
 \end{code}
 
@@ -455,13 +456,26 @@ possible arguments of type `Bool ⊎ Tri`:
 
 Sum on types also shares a property with sum on numbers in that it is
 commutative and associative _up to isomorphism_.
+                x → {!!} }
 
 #### Exercise `⊎-comm` (recommended)
-
+o
 Show sum is commutative up to isomorphism.
 
 \begin{code}
 -- Your code goes here
+⊎-comm : ∀ {A B : Set} → A ⊎ B ≃ B ⊎ A
+⊎-comm =
+  record
+    { to      = case-⊎ inj₂ inj₁
+    ; from    = case-⊎ inj₂ inj₁
+    ; from∘to = λ{ (inj₁ A) → refl
+                 ; (inj₂ B) → refl
+                 }
+    ; to∘from = λ{ (inj₁ B) → refl
+                 ; (inj₂ A) → refl
+                 }
+    }
 \end{code}
 
 #### Exercise `⊎-assoc` (practice)
@@ -470,6 +484,26 @@ Show sum is associative up to isomorphism.
 
 \begin{code}
 -- Your code goes here
+⊎-assoc : ∀ {A B C : Set} → (A ⊎ B) ⊎ C ≃ A ⊎ (B ⊎ C)
+⊎-assoc {A} {C} =
+  record
+    { to      = λ{ (inj₁ (inj₁ A)) → inj₁ A
+                 ; (inj₁ (inj₂ B)) → inj₂ (inj₁ B)
+                 ; (inj₂ C)        → inj₂ (inj₂ C)
+                 }
+    ; from    = λ{ (inj₁ A)        → inj₁ (inj₁ A)
+                 ; (inj₂ (inj₁ B)) → inj₁ (inj₂ B)
+                 ; (inj₂ (inj₂ C)) → inj₂ C
+                 }
+    ; from∘to = λ{ (inj₁ (inj₁ x)) → refl
+                 ; (inj₁ (inj₂ x)) → refl
+                 ; (inj₂ x) → refl
+                 }
+    ; to∘from = λ{ (inj₁ x) → refl
+                 ; (inj₂ (inj₁ x)) → refl
+                 ; (inj₂ (inj₂ x)) → refl
+                 }
+    }
 \end{code}
 
 ## False is empty
@@ -533,6 +567,13 @@ Show empty is the left identity of sums up to isomorphism.
 
 \begin{code}
 -- Your code goes here
+⊥-identityˡ : ∀ {A : Set} → ⊥ ⊎ A ≃ A
+⊥-identityˡ =
+  record { to      = λ {(inj₂ x) → x}
+         ; from    = λ A → inj₂ A
+         ; from∘to = λ {(inj₂ x) → refl}
+         ; to∘from = λ y → refl
+         }
 \end{code}
 
 #### Exercise `⊥-identityʳ` (practice)
@@ -541,6 +582,13 @@ Show empty is the right identity of sums up to isomorphism.
 
 \begin{code}
 -- Your code goes here
+⊥-identityʳ : ∀ {A : Set} → A ⊎ ⊥ ≃ A
+⊥-identityʳ =
+  record { to      = λ {(inj₁ A) → A}
+         ; from    = λ A → inj₁ A
+         ; from∘to = λ { (inj₁ x) → refl}
+         ; to∘from = λ y → refl
+         }
 \end{code}
 
 ## Implication is function {#implication}
@@ -764,14 +812,17 @@ one of these laws is "more true" than the other.
 
 Show that the following property holds:
 \begin{code}
-postulate
-  ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
+-- postulate
+--  ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
 \end{code}
 This is called a _weak distributive law_. Give the corresponding
 distributive law, and explain how it relates to the weak version.
 
 \begin{code}
 -- Your code goes here
+⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
+⊎-weak-× ⟨ inj₁ A , C ⟩ = inj₁ A
+⊎-weak-× ⟨ inj₂ B , C ⟩ = inj₂ ⟨ B , C ⟩
 \end{code}
 
 
@@ -779,13 +830,20 @@ distributive law, and explain how it relates to the weak version.
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts:
 \begin{code}
-postulate
-  ⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
+-- postulate
+--   ⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
 \end{code}
 Does the converse hold? If so, prove; if not, give a counterexample.
 
 \begin{code}
 -- Your code goes here
+⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
+⊎×-implies-×⊎ (inj₁ ⟨ A , B ⟩) = ⟨ inj₁ A , inj₁ B ⟩
+⊎×-implies-×⊎ (inj₂ ⟨ C , D ⟩) = ⟨ inj₂ C , inj₂ D ⟩
+
+-- For the converse: suppose A and D hold, but C and B do not. This satisfies
+-- A or C holding and B or D holding, however it does not satisfy A and B holding
+-- or C and D holding. Hence the hypothesis does not imply the antecedent!
 \end{code}
 
 
